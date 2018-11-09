@@ -113,7 +113,7 @@ if __name__ == '__main__':
 	psi[23] = 1.0
 	fig = figure(1)
 	ax = fig.add_subplot(111, projection = '3d')
-	ax.plot_trisurf(x, y, psi, triangles = tri, cmap = cm.jet, livewidth = 0.2)
+	ax.plot_trisurf(x, y, psi, triangles = tri, cmap = cm.jet, linewidth = 0.2)
 	xlabel('axe des abscisses')
 	ylabel('axe des ordonnees')
 	ax.set_zlabel('axe des cotes')
