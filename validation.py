@@ -1,4 +1,3 @@
-#!/bin/python3
 # -*- coding: utf-8 -*-
 
 """
@@ -6,7 +5,7 @@
 """
 
 from pylab import *
-from mpl_toolkits.mplot3d.axes3d import Axes3D as a3d
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 import sys
 import matplotlib.pyplot as plt
 
