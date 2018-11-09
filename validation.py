@@ -11,6 +11,19 @@ import sys
 import matplotlib.pyplot as plt
 
 
+def fonc_u(x, y):
+	return 1.0 + sin(0.5 * pi * x) + x * (x - 4) * cos(0.5 * pi * y)
+
+
+def fonc_uE(x, y):
+	assert (x == 0 or x == 4)
+	return
+
+
+def fonc_f(x, y):
+	return 0.25 * pi ^ 2 * sin(0.5 * pi * x) + (-2.0 + 0.25 * pi ^ 2 * x * (x - 4)) * cos(0.5 * pi * y)
+
+
 def lit_fichier_msh():
 	nomf = input("Entrer le nom du fichier : ")
 	try:
@@ -108,8 +121,7 @@ def trace_maillage_ref(nbn, nbe, nba, coord, tri, ar, refn, reft, refa):
 # 	return
 
 
-def afficherMatcreuse():
-	[nbn, nbe, nba, coord, tri, ar, refn, reft, refa] = lit_fichier_msh()
+def afficherMatCreuse(nbn, coord, tri):
 	x = coord[:, 0]
 	y = coord[:, 1]
 	psi = zeros(nbn)
@@ -125,5 +137,17 @@ def afficherMatcreuse():
 	show()
 
 
+def preTraitement():
+	return
+
+
+def traitement():
+	return
+
+
+def postTraitement():
+	return
+
+
 if __name__ == '__main__':
-	afficherMatcreuse()
+	afficherMatCreuse()
