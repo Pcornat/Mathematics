@@ -1,3 +1,4 @@
+#!/bin/python3
 # -*- coding: utf-8 -*-
 
 """
@@ -5,6 +6,7 @@
 """
 
 from pylab import *
+from mpl_toolkits.mplot3d.axes3d import Axes3D as a3d
 import sys
 import matplotlib.pyplot as plt
 
@@ -97,5 +99,25 @@ def trace_maillage_ref(nbn, nbe, nba, coord, tri, ar, refn, reft, refa):
 	show()
 
 
+# def assembly(n):
+# 	a = zeros((n, n))
+# 	f = zeros((n, 1))
+#
+# 	return
+
+
 if __name__ == '__main__':
-	lit_fichier_msh()
+	[nbn, nbe, nba, coord, tri, ar, refn, reft, refa] = lit_fichier_msh()
+	x = coord[:, 0]
+	y = coord[:, 1]
+	psi = zeros(nbn)
+	psi[23] = 1.0
+	fig = figure(1)
+	ax = fig.add_subplot(111, projection = '3d')
+	ax.plot_trisurf(x, y, psi, triangles = tri, cmap = cm.jet, livewidth = 0.2)
+	xlabel('axe des abscisses')
+	ylabel('axe des ordonnees')
+	ax.set_zlabel('axe des cotes')
+	title('Fonction chapeau numero 23')
+	ax.view_init(10, -60)
+	show()
