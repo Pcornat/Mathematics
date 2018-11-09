@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 """
@@ -98,14 +99,16 @@ def trace_maillage_ref(nbn, nbe, nba, coord, tri, ar, refn, reft, refa):
 	show()
 
 
-# def assembly(n):
+# def assembly(n, nbe):
 # 	a = zeros((n, n))
 # 	f = zeros((n, 1))
+# 	for l in nbe:
 #
+# 	#endFor
 # 	return
 
 
-if __name__ == '__main__':
+def afficherMatcreuse():
 	[nbn, nbe, nba, coord, tri, ar, refn, reft, refa] = lit_fichier_msh()
 	x = coord[:, 0]
 	y = coord[:, 1]
@@ -120,3 +123,7 @@ if __name__ == '__main__':
 	title('Fonction chapeau numero 23')
 	ax.view_init(10, -60)
 	show()
+
+
+if __name__ == '__main__':
+	afficherMatcreuse()
