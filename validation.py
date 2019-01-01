@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -21,7 +21,24 @@ def fonc_uE(x, y):
 
 
 def fonc_f(x, y):
-	return 0.25 * pi ^ 2 * sin(0.5 * pi * x) + (-2.0 + 0.25 * pi ^ 2 * x * (x - 4)) * cos(0.5 * pi * y)
+	return 0.25 * pi * pi * sin(0.5 * pi * x) + (-2.0 + 0.25 * pi * pi * x * (x - 4)) * cos(0.5 * pi * y)
+
+
+def fct_kappa(x, y):
+	return 1
+
+
+def fct_alpha(x, y):
+	return 10.0 ** 8
+
+
+def coeffelemen_P1_rigid(matK: ndarray) -> ndarray:
+	if not isinstance(matK, ndarray):
+		raise TypeError
+	if matK.shape != (3, 3):
+		raise TypeError
+	#TODO: finir la fonction (cf le poly sur moodle).
+	return zeros(shape = (3, 3), dtype = double, order = 'C')
 
 
 def lit_fichier_msh():
@@ -85,8 +102,8 @@ def trace_maillage_ind(nbn, nbe, nba, coord, tri, ar):
 		y = coord[i, 1]
 		plt.text(x, y, i, color = 'green')
 	for i in range(nba):
-		x = ((coord[ar[i, 0], 0] + coord[ar[i, 1], 0]) / 2)
-		y = ((coord[ar[i, 0], 1] + coord[ar[i, 1], 1]) / 2)
+		x = ((coord[ar[i, 0], 0] + coord[ar[i, 1], 0]) * 0.5)
+		y = ((coord[ar[i, 0], 1] + coord[ar[i, 1], 1]) * 0.5)
 		plt.text(x, y, i, color = 'orange')
 	for i in range(nbe):
 		x = ((coord[tri[i, 0], 0] + coord[tri[i, 1], 0] + coord[tri[i, 2], 0]) / 3)
@@ -102,8 +119,8 @@ def trace_maillage_ref(nbn, nbe, nba, coord, tri, ar, refn, reft, refa):
 		y = coord[i, 1]
 		plt.text(x, y, refn[i], color = 'green')
 	for i in range(nba):
-		x = ((coord[ar[i, 0], 0] + coord[ar[i, 1], 0]) / 2)
-		y = ((coord[ar[i, 0], 1] + coord[ar[i, 1], 1]) / 2)
+		x = ((coord[ar[i, 0], 0] + coord[ar[i, 1], 0]) * 0.5)
+		y = ((coord[ar[i, 0], 1] + coord[ar[i, 1], 1]) * 0.5)
 		plt.text(x, y, refa[i], color = 'orange')
 	for i in range(nbe):
 		x = ((coord[tri[i, 0], 0] + coord[tri[i, 1], 0] + coord[tri[i, 2], 0]) / 3)
@@ -112,13 +129,13 @@ def trace_maillage_ref(nbn, nbe, nba, coord, tri, ar, refn, reft, refa):
 	show()
 
 
-# def assembly(n, nbe):
-# 	a = zeros((n, n))
-# 	f = zeros((n, 1))
-# 	for l in nbe:
-#
-# 	#endFor
-# 	return
+def assembly(n, nbe):
+	a = zeros((n, n))
+	f = zeros((n, 1))
+	for l in nbe:
+
+	# endFor
+	return
 
 
 def afficherMatCreuse(nbn, coord, tri):
@@ -150,4 +167,7 @@ def postTraitement():
 
 
 if __name__ == '__main__':
-	afficherMatCreuse()
+	(nbn, nbe, nba, coord, tri, ar, refn, reft, refa) = lit_fichier_msh()
+	afficherMatCreuse(nbn, coord, tri)
+	trace_maillage_ind(nbn, nbe, nba, coord, tri, ar)
+	trace_maillage_ref(nbn, nbe, nba, coord, tri, ar, refn, reft, refa)
