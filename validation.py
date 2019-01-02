@@ -2,26 +2,33 @@
 # -*- coding: utf-8 -*-
 
 """
-@author: Florent Denef
+
 """
 
-from pylab import *
-from mpl_toolkits.mplot3d.axes3d import Axes3D
 import sys
+
 import matplotlib.pyplot as plt
+from pylab import *
 
 
 def fonc_u(x, y):
 	return 1.0 + sin(0.5 * pi * x) + x * (x - 4) * cos(0.5 * pi * y)
 
 
-def fonc_uE(x, y):
+def fonc_uE(x):
 	assert (x == 0 or x == 4)
 	return
 
 
-# 1/2 * abs((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1))
 def mesT(coord: ndarray, tri: ndarray) -> double:
+	"""
+	Calcul d'air d'un triangle à partir de ses 3 points : 1/2 * abs((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1))
+
+	:param coord: tableau de coordonnées des points du triangle.
+	:param tri: tableau contenant le triangle dont on calcule l'air : chaque case est un sommet du triangle,
+	cette case contient l'indice à mettre dans le tableau coord (cf ci-dessous)
+	:return: L'air du triangle passé en paramètre.
+	"""
 	return 1 / 2 * builtins.abs(
 		(coord[tri[1], 0] - coord[tri[0], 0]) * (coord[tri[2], 1] - coord[tri[0], 1]) -
 		(coord[tri[2], 0] - coord[tri[0], 0]) * (coord[tri[1], 1] - coord[tri[0], 1])
@@ -32,33 +39,69 @@ def fonc_f(x, y):
 	return 0.25 * pi * pi * sin(0.5 * pi * x) + (-2.0 + 0.25 * pi * pi * x * (x - 4)) * cos(0.5 * pi * y)
 
 
-def fct_kappa(x, y):
+def fct_kappa():
 	return 1
 
 
-def fct_alpha(x, y):
+def fct_alpha():
 	return 10.0 ** 8
 
 
-def coeffelemen_P1_rigid(coord: ndarray, tri: ndarray) -> ndarray:
+def coeffelem_P1_rigid(coord: ndarray, tri: ndarray) -> ndarray:
+	"""
+	:param coord:
+	:param tri:
+	:return: Matrice carrée de 3
+	"""
+
 	matk = zeros_like(tri)
 	if not isinstance(coord, ndarray):
 		raise TypeError
-	# TODO: finir la fonction (cf le poly sur moodle).
-	point1 = array([coord[tri[0], 0], coord[tri[0], 1]])
+	if not isinstance(tri, ndarray):
+		raise TypeError
+
+	point1 = array([coord[tri[0], 0], coord[tri[0], 1]])  # point1[0] = x1, point1[1] = y1, déduisez la suite.
 	point2 = array([coord[tri[1], 0], coord[tri[1], 1]])
 	point3 = array([coord[tri[2], 0], coord[tri[2], 1]])
-	matk[0, 0] = (1 / (4 * mesT(coord, tri))) * ((point2[0] - point3[0]) ** 2 + (point2[1] - point3[1]) ** 2)
 
-	matk[1, 1] = (1 / (4 * mesT(coord, tri))) * ((point3[0] - point1[0]) ** 2 + (point3[1] - point1[1]) ** 2)
+	coeff = 1 / (4 * mesT(coord, tri))
 
-	matk[2, 2] = (1 / (4 * mesT(coord, tri))) * ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+	matk[0, 0] = coeff * ((point2[0] - point3[0]) ** 2 + (point2[1] - point3[1]) ** 2)
 
+	matk[1, 1] = coeff * ((point3[0] - point1[0]) ** 2 + (point3[1] - point1[1]) ** 2)
 
+	matk[2, 2] = coeff * ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+
+	matk[0, 1] = matk[1, 0] = coeff * (-(point1[0] - point3[0]) * (point2[0] - point3[0]) -
+									   (point1[1] - point3[1]) * (point2[1] - point3[1]))
+
+	matk[0, 2] = matk[2, 0] = coeff * (-(point3[0] - point2[0]) * (point1[0] - point2[0]) -
+									   (point3[1] - point2[1]) * (point1[1] - point2[1]))
+
+	matk[1, 2] = matk[2, 1] = coeff * (-(point2[0] - point1[0]) * (point3[0] - point1[0]) -
+									   (point2[1] - point1[1]) * (point3[1] - point1[1]))
+	# matk est calculé.
 	return matk
 
 
+def coeffelem_P1_source(coord: ndarray, tri: ndarray) -> ndarray:
+	"""
+
+	:param coord:
+	:param tri:
+	:return:
+	"""
+
+	# TODO : faire la fonction
+	return zeros(shape = (3, 3), dtype = double)
+
+
 def lit_fichier_msh():
+	"""
+	Permet de lire un fichier .msh
+	:return: Les différents éléments caractéristiques qui sont contenus dans le fichier.
+	"""
+
 	nomf = input("Entrer le nom du fichier : ")
 	try:
 		f = open(nomf, 'r')
@@ -112,7 +155,18 @@ def lit_fichier_msh():
 	return [nbn, nbe, nba, coord, tri, ar, refn, reft, refa]
 
 
-def trace_maillage_ind(nbn, nbe, nba, coord, tri, ar):
+def trace_maillage_ind(nbn, nbe, nba, coord: ndarray, tri: ndarray, ar):
+	"""
+
+	:param nbn:
+	:param nbe:
+	:param nba:
+	:param coord:
+	:param tri:
+	:param ar:
+	:return:
+	"""
+
 	triplot(coord[:, 0], coord[:, 1], tri)
 	for i in range(nbn):
 		x = coord[i, 0]
@@ -130,6 +184,20 @@ def trace_maillage_ind(nbn, nbe, nba, coord, tri, ar):
 
 
 def trace_maillage_ref(nbn, nbe, nba, coord, tri, ar, refn, reft, refa):
+	"""
+
+	:param nbn:
+	:param nbe:
+	:param nba:
+	:param coord:
+	:param tri:
+	:param ar:
+	:param refn:
+	:param reft:
+	:param refa:
+	:return:
+	"""
+
 	triplot(coord[:, 0], coord[:, 1], tri)
 	for i in range(nbn):
 		x = coord[i, 0]
@@ -146,16 +214,24 @@ def trace_maillage_ref(nbn, nbe, nba, coord, tri, ar, refn, reft, refa):
 	show()
 
 
-def assembly(n, nbe):
-	a = zeros((n, n))
-	f = zeros((n, 1))
-	for l in nbe:
-
-	# endFor
-	return
+# def assembly(n, nbe):
+# 	a = zeros((n, n))
+# 	f = zeros((n, 1))
+# 	for l in nbe:
+#
+# 	# endFor
+# 	return
 
 
 def afficherMatCreuse(nbn, coord, tri):
+	"""
+	Afficher la matrice creuse.
+	:param nbn:
+	:param coord:
+	:param tri:
+	:return:
+	"""
+
 	x = coord[:, 0]
 	y = coord[:, 1]
 	psi = zeros(nbn)
