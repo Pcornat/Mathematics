@@ -20,6 +20,14 @@ def fonc_uE(x, y):
 	return
 
 
+# 1/2 * abs((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1))
+def mesT(coord: ndarray, tri: ndarray) -> double:
+	return 1 / 2 * builtins.abs(
+		(coord[tri[1], 0] - coord[tri[0], 0]) * (coord[tri[2], 1] - coord[tri[0], 1]) -
+		(coord[tri[2], 0] - coord[tri[0], 0]) * (coord[tri[1], 1] - coord[tri[0], 1])
+	)
+
+
 def fonc_f(x, y):
 	return 0.25 * pi * pi * sin(0.5 * pi * x) + (-2.0 + 0.25 * pi * pi * x * (x - 4)) * cos(0.5 * pi * y)
 
@@ -32,13 +40,22 @@ def fct_alpha(x, y):
 	return 10.0 ** 8
 
 
-def coeffelemen_P1_rigid(matK: ndarray) -> ndarray:
-	if not isinstance(matK, ndarray):
+def coeffelemen_P1_rigid(coord: ndarray, tri: ndarray) -> ndarray:
+	matk = zeros_like(tri)
+	if not isinstance(coord, ndarray):
 		raise TypeError
-	if matK.shape != (3, 3):
-		raise TypeError
-	#TODO: finir la fonction (cf le poly sur moodle).
-	return zeros(shape = (3, 3), dtype = double, order = 'C')
+	# TODO: finir la fonction (cf le poly sur moodle).
+	point1 = array([coord[tri[0], 0], coord[tri[0], 1]])
+	point2 = array([coord[tri[1], 0], coord[tri[1], 1]])
+	point3 = array([coord[tri[2], 0], coord[tri[2], 1]])
+	matk[0, 0] = (1 / (4 * mesT(coord, tri))) * ((point2[0] - point3[0]) ** 2 + (point2[1] - point3[1]) ** 2)
+
+	matk[1, 1] = (1 / (4 * mesT(coord, tri))) * ((point3[0] - point1[0]) ** 2 + (point3[1] - point1[1]) ** 2)
+
+	matk[2, 2] = (1 / (4 * mesT(coord, tri))) * ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+
+
+	return matk
 
 
 def lit_fichier_msh():
