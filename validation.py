@@ -14,6 +14,10 @@ def fonc_uE(x, y):
 	assert (y == 0 or y == 4)
 
 
+def dist(pointA: ndarray, pointB: ndarray) -> ndarray:
+	return sqrt((pointB[0] - pointA[0]) ** 2 + (pointB[1] - pointA[1]) ** 2)
+
+
 def mesT(coord: ndarray, tri: ndarray) -> double:
 	"""
 	Calcul d'air d'un triangle à partir de ses 3 points : 1/2 * abs((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1))
@@ -97,6 +101,39 @@ def coeffelem_P1_source(coord: ndarray, tri: ndarray) -> ndarray:
 	y = (point1[1] + point2[1] + point3[1]) / 3
 
 	return coeff * fonc_f(x, y) * lastElem
+
+
+def coeffelem_P1_transf(pointA: ndarray, pointB: ndarray) -> ndarray:
+	"""
+	Calcul coeff élémentaire de transfert thermique (extérieur)
+	:param pointA:
+	:param pointB:
+	:return:
+	"""
+
+	coeff = dist(pointA, pointB) * 0.5
+	x = (pointA[0] + pointB[0]) * 0.5
+	y = (pointA[1] + pointB[1]) * 0.5
+	vec = ones(shape = (1, 2), dtype = double, order = 'F')
+
+	return coeff * fct_alpha() * fonc_uE(x, y) * vec
+
+
+def coeffelem_P1_poids(pointA: ndarray, pointB: ndarray) -> ndarray:
+	"""
+	Calcul coeff élémentaire poids (transfert thermique)
+	:param pointA:
+	:param pointB:
+	:return:
+	"""
+
+	coeff = dist(pointA, pointB)
+	mat = ones(shape = (2, 2), dtype = double, order = 'C')
+
+	mat[0, 0] = 2
+	mat[1, 1] = 2
+
+	return coeff * fct_alpha() * mat
 
 
 def lit_fichier_msh():
