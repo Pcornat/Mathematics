@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
 
-"""
-
-import sys
-
-import matplotlib.pyplot as plt
 from pylab import *
 
 
@@ -15,9 +9,9 @@ def fonc_u(x, y):
 	return 1.0 + sin(0.5 * pi * x) + x * (x - 4) * cos(0.5 * pi * y)
 
 
-def fonc_uE(x):
+def fonc_uE(x, y):
 	assert (x == 0 or x == 4)
-	return
+	assert (y == 0 or y == 4)
 
 
 def mesT(coord: ndarray, tri: ndarray) -> double:
@@ -29,7 +23,7 @@ def mesT(coord: ndarray, tri: ndarray) -> double:
 	cette case contient l'indice à mettre dans le tableau coord (cf ci-dessous)
 	:return: L'air du triangle passé en paramètre.
 	"""
-	return 1 / 2 * builtins.abs(
+	return 0.5 * builtins.abs(
 		(coord[tri[1], 0] - coord[tri[0], 0]) * (coord[tri[2], 1] - coord[tri[0], 1]) -
 		(coord[tri[2], 0] - coord[tri[0], 0]) * (coord[tri[1], 1] - coord[tri[0], 1])
 	)
@@ -86,14 +80,23 @@ def coeffelem_P1_rigid(coord: ndarray, tri: ndarray) -> ndarray:
 
 def coeffelem_P1_source(coord: ndarray, tri: ndarray) -> ndarray:
 	"""
-
+	Calcul la source pour un triangle.
 	:param coord:
 	:param tri:
 	:return:
 	"""
 
-	# TODO : faire la fonction
-	return zeros(shape = (3, 3), dtype = double)
+	point1 = array([coord[tri[0], 0], coord[tri[0], 1]])  # point1[0] = x1, point1[1] = y1, déduisez la suite.
+	point2 = array([coord[tri[1], 0], coord[tri[1], 1]])
+	point3 = array([coord[tri[2], 0], coord[tri[2], 1]])
+
+	coeff = mesT(coord, tri) / 3
+	lastElem = ones(shape = (3, 1), dtype = double, order = 'F')
+
+	x = (point1[0] + point2[0] + point3[0]) / 3
+	y = (point1[1] + point2[1] + point3[1]) / 3
+
+	return coeff * fonc_f(x, y) * lastElem
 
 
 def lit_fichier_msh():
