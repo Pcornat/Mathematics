@@ -195,7 +195,7 @@ def lit_fichier_msh():
 	return [nbn, nbe, nba, coord, tri, ar, refn, reft, refa]
 
 
-def trace_maillage_ind(nbn, nbe, nba, coord: ndarray, tri: ndarray, ar):
+def trace_maillage_ind(nbn: builtins.int, nbe: builtins.int, nba: builtins.int, coord: ndarray, tri: ndarray, ar):
 	"""
 
 	:param nbn:
@@ -254,13 +254,17 @@ def trace_maillage_ref(nbn, nbe, nba, coord, tri, ar, refn, reft, refa):
 	show()
 
 
-# def assembly(n, nbe):
-# 	a = zeros((n, n))
-# 	f = zeros((n, 1))
-# 	for l in nbe:
-#
-# 	# endFor
-# 	return
+def assemblage_EF_P1(n: builtins.int, nbe: builtins.int, coord: ndarray, tri: ndarray):
+	A = zeros((n, n))
+	F = zeros((n, 1))
+	for l in range(nbe):
+		k = coeffelem_P1_rigid(coord, tri)
+		f = coeffelem_P1_source(coord, tri)
+		I1 = tri[l, 0]
+		I2 = tri[l, 1]
+		I3 = tri[l, 2]
+		A = A + k
+	return
 
 
 def afficherMatCreuse(nbn, coord, tri):
